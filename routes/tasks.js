@@ -11,12 +11,34 @@ router.get('/', async function(req, res, next) {
   let tasks;
 
   if(req.query.status){
+
+    // validate query
+    const statusSchema = Joi.string().valid("pending", "in progress", "completed");
+    const {error} = statusSchema.validate(req.query.status);
+    if(error) {
+      return res.status(400).json({
+        error: "Bad request",
+        message: error.details[0].message 
+      })
+    }
+
     tasks = await Task.findAll({
       where: {
         status: req.query.status
       }
     })  
   } else if(req.query.dueDate){
+
+    // validate query
+    const statusSchema = Joi.date();
+    const {error} = statusSchema.validate(req.query.dueDate);
+    if(error) {
+      return res.status(400).json({
+        error: "Bad request",
+        message: error.details[0].message 
+      })
+    }
+
     tasks = await Task.findAll({
       where: {
         dueDate: req.query.dueDate

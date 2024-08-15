@@ -7,9 +7,9 @@
     "dialect": "mysql"
   },
   "test": {
-    "username": "root",
-    "password": null,
-    "database": "database_test",
+    "username": "task_app",
+    "password": "tasks2024",
+    "database": "task_management",
     "host": "127.0.0.1",
     "dialect": "mysql"
   },
