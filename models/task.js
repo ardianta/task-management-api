@@ -20,10 +20,15 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4
     },
-    title: DataTypes.STRING,
+    title: {
+      type: DataTypes.STRING,
+      validate: {
+        notEmpty: true,
+      }
+    },
     description: DataTypes.TEXT,
     dueDate: {
-      type: DataTypes.DATE,
+      type: DataTypes.DATEONLY,
       defaultValue: DataTypes.NOW
     },
     status: { 

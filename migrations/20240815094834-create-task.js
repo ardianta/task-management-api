@@ -17,7 +17,7 @@ module.exports = {
         type: Sequelize.TEXT
       },
       dueDate: {
-        type: Sequelize.DATE,
+        type: Sequelize.DATEONLY,
         defaultValue: Sequelize.NOW
       },
       status: {
