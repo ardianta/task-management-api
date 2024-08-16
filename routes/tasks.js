@@ -3,7 +3,6 @@ var router = express.Router();
 
 const { Task } = require("../models");
 const Joi = require('joi');
-const { status } = require('express/lib/response');
 
 /* GET tasks listing. */
 router.get('/', async function(req, res, next) {
