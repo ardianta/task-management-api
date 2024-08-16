@@ -6,6 +6,11 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var tasksRouter = require('./routes/tasks');
 
+
+const swaggerUi = require("swagger-ui-express");
+const YAML = require('yamljs');
+const swaggerDocument = YAML.load('./docs/swagger.yml');
+
 var app = express();
 
 app.use(logger('dev'));
@@ -14,7 +19,9 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+
 app.use('/', indexRouter);
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/tasks', tasksRouter);
 
 module.exports = app;

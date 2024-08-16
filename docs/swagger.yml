@@ -1,0 +1,226 @@
+openapi: 3.0.0
+info:
+  title: Task Management API
+  description: Simple Task Management API.
+  version: 0.1.0
+servers:
+  - url: http://localhost:3000
+    description: Development Server
+  - url: http://staging-api.example.com
+    description: Internal staging server for testing
+
+components:
+  responses:
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 404
+            message: Not found
+    BadRequest:
+      description: Invalid Input or bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 400
+            message: Bad request on invalid input
+    InternalError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 500
+            message: Internal server error
+  schemas:
+    Tasks:
+      type: array
+      items:
+        type: object
+        $ref: "#/components/schemas/Task"
+    Task:
+      type: object
+      required:
+        - title
+      properties:
+        id:
+          type: string
+          description: The auto-generated id of Task
+        title:
+          type: string
+          description: Task title
+        status:
+          type: string
+          enum: [pending, in progress, completed]
+          description: The task status
+        dueDate:
+          type: string
+          format: date
+          description: Due date of the task
+        description:
+          type: string
+          description: Task description
+      example:
+        id: ffec65a3-3faf-4049-82c8-1a0060f5bf43
+        title: "Write API Documentation"
+        status: "in progress"
+        dueDate: "2024-08-17"
+        description: "Implement Swagger for API Docs"
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+        - code
+        - message
+
+paths:
+  /tasks:
+    get:
+      summary: Returns a list of tasks.
+      tags:
+        - Task
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [pending, in progress, completed]
+        - name: dueDate
+          in: query
+          schema:
+            type: string
+            format: date
+      responses:
+        "200": # status code
+          description: A JSON array of tasks
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tasks'
+        "400":
+          $ref: '#/components/responses/BadRequest'
+        "500":
+          $ref: '#/components/responses/InternalError'
+    post:
+      summary: Create a new task
+      tags: [Task]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+            example:
+              title: "Write API Documentation"
+              status: "in progress"
+              dueDate: "2024-08-17"
+              description: "Implement Swagger for API Docs"
+      responses:
+        200:
+          description: The created task.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        "400":
+          $ref: '#/components/responses/BadRequest'
+        "500":
+          $ref: '#/components/responses/InternalError'
+  /tasks/:id:
+    get:
+      summary: Returns a task.
+      tags:
+        - Task
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid4
+      responses:
+        "200": # status code
+          description: A JSON of task
+          content:
+            application/json:
+              schema:
+                type: Object
+                $ref: '#/components/schemas/Task'
+        "400":
+          $ref: '#/components/responses/BadRequest'
+        "404":
+          $ref: '#/components/responses/NotFound'
+        "500":
+          $ref: '#/components/responses/InternalError'
+    put:
+      summary: update task.
+      tags:
+        - Task
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+            example:
+              title: "Write API Documentation using Swagger"
+              status: "in progress"
+              dueDate: "2024-08-17"
+              description: "Implement Swagger for API Docs"
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid4
+      responses:
+        "200": # status code
+          description: A JSON of updated task
+          content:
+            application/json:
+              schema:
+                type: Object
+                $ref: '#/components/schemas/Task'
+        "400":
+          $ref: '#/components/responses/BadRequest'
+        "404":
+          $ref: '#/components/responses/NotFound'
+        "500":
+          $ref: '#/components/responses/InternalError'
+    delete:
+      summary: remove task.
+      tags:
+        - Task
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid4
+      responses:
+        "200": # status code
+          description: A JSON successfully message 
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                message: "Task deleted!"
+        "400":
+          $ref: '#/components/responses/BadRequest'
+        "404":
+          $ref: '#/components/responses/NotFound'
+        "500":
+          $ref: '#/components/responses/InternalError'
